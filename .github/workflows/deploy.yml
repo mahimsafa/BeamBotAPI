@@ -10,13 +10,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      # - uses: actions/setup-node@v3
-      #   with:
-      #     node-version: "18"
-      # - name: Installing dependencies
-      #   run: npm i
-      # - name: Building application
-      #   run: npm run build
 
       - name: Deploy to Server
         uses: easingthemes/ssh-deploy@main
@@ -26,12 +19,8 @@ jobs:
           REMOTE_HOST: ${{ secrets.DEVELOPMENT_DNS }}
           REMOTE_USER: ${{ secrets.USERNAME }}
           TARGET: /home/ubuntu/app/
-          # SCRIPT_BEFORE: |
-          #   rm -rf /home/ubuntu/app/*
-          #   rm -rf /home/ubuntu/app/.*
-          #   pm2 delete 0
           SCRIPT_AFTER: |
             cp /home/ubuntu/env /home/ubuntu/app/.env
             cd /home/ubuntu/app && npm install
             cd /home/ubuntu/app && npm run build
-            pm2 start /home/ubuntu/app/dist/main.js --name api
+            pm2 restart api
