@@ -5,7 +5,7 @@ on:
     branches: ["main"]
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -27,8 +27,5 @@ jobs:
           REMOTE_USER: ${{ secrets.USERNAME }}
           TARGET: ${{ secrets.TARGET }}
           SCRIPT_AFTER: |
-            echo test > test.txt
-            whoami
-            ls -al
             cp /home/ubuntu/env /home/ubuntu/app/.env
-            pm2 restart 0
+            pm2 restart api
