@@ -1,0 +1,11 @@
+version: '3.8'
+services:
+  db-server:
+    image: postgres:13
+    ports: 
+      - 8001:5432
+    environment:
+      POSTGRES_USER: 'BeamAdmin'
+      POSTGRES_PASSWORD: 'B123123b$'
+      POSTGRES_DB: 'BeamBotDB'
+      

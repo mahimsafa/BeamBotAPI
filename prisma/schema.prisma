@@ -1,0 +1,91 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model TelegramGroup {
+  // Allow deleting TelegramGroup without deleting the related Competition
+  groupId   String   @id @default(cuid()) @map("group_id") // The map 
+  createAt  DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  groupName       String
+  fsGroupImageURL String
+  tgPortal        String
+
+  projectName       String
+  projectSymbol     String
+  projectTokenChain String
+  contractAddress   String
+
+  competitions Competition[]
+}
+
+model User {
+  userTGID  String   @id
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  username  String
+  firstName String?
+  lastName  String?
+
+  submissions Submission[] @relation("SubmissionToUser")
+  votes       Vote[]
+}
+
+model Competition {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  isRunning Boolean @default(true)
+
+  title       String
+  mode        String
+  startTime   DateTime @default(now())
+  durationHrs Int
+
+  projectChain String
+  prize1       Float
+  prize2       Float?
+  prize3       Float?
+
+  groupId String
+  group   TelegramGroup @relation(fields: [groupId], references: [groupId])
+
+  submissions Submission[]
+}
+
+model Submission {
+  id             String   @id @default(uuid())
+  submissionDate DateTime @default(now())
+
+  imageURL String
+  caption  String
+
+  competitionId String
+  competition   Competition @relation(fields: [competitionId], references: [id])
+
+  creatorId String
+  creator   User   @relation("SubmissionToUser", fields: [creatorId], references: [userTGID])
+
+  votes Vote[]
+}
+
+model Vote {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [userTGID])
+
+  submissionId String
+  submission   Submission @relation(fields: [submissionId], references: [id])
+}
