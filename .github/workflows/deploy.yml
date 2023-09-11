@@ -26,10 +26,10 @@ jobs:
           REMOTE_HOST: ${{ secrets.DEVELOPMENT_DNS }}
           REMOTE_USER: ${{ secrets.USERNAME }}
           TARGET: /home/ubuntu/app/
-          SCRIPT_BEFORE: |
-            rm -rf /home/ubuntu/app/*
-            rm -rf /home/ubuntu/app/.*
-            pm2 delete 0
+          # SCRIPT_BEFORE: |
+          #   rm -rf /home/ubuntu/app/*
+          #   rm -rf /home/ubuntu/app/.*
+          #   pm2 delete 0
           SCRIPT_AFTER: |
             cp /home/ubuntu/env /home/ubuntu/app/.env
             cd /home/ubuntu/app && npm install
