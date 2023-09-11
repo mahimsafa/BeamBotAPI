@@ -25,9 +25,9 @@ jobs:
           SOURCE: "*"
           REMOTE_HOST: ${{ secrets.DEVELOPMENT_DNS }}
           REMOTE_USER: ${{ secrets.USERNAME }}
-          TARGET: ${{ secrets.TARGET }}
+          TARGET: /home/ubuntu/app/
           SCRIPT_AFTER: |
             cp /home/ubuntu/env /home/ubuntu/app/.env
-            npm install
-            npm run build
+            cd /home/ubuntu/app && npm install
+            cd /home/ubuntu/app && npm run build
             pm2 restart api
