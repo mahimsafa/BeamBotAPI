@@ -1,0 +1,34 @@
+name: Deployment API
+
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+      - name: Installing dependencies
+        run: npm ci
+      - name: Building application
+        run: npm run build
+
+      - name: Deploy to Server
+        uses: easingthemes/ssh-deploy@main
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
+          SOURCE: "dist/"
+          REMOTE_HOST: ${{ secrets.DEVELOPMENT_DNS }}
+          REMOTE_USER: ${{ secrets.USERNAME }}
+          TARGET: ${{ secrets.TARGET }}
+          SCRIPT_AFTER: |
+            echo test > test.txt
+            whoami
+            ls -al
+            cp /home/ubuntu/env /home/ubuntu/app/.env
+            pm2 restart 0
